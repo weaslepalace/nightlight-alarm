@@ -15,7 +15,7 @@ class ShinePattern:
         "SOLID_RED",
         "SOLID_GREEN",
         "SOLID_BLUE",
-        "BREATING_RAINBOW_3"
+        "BREATHING_RAINBOW_3"
     ] 
 
     def _switch_delay(self):
