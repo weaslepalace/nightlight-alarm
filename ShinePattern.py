@@ -45,4 +45,5 @@ class ShinePattern:
     def __init__(self):
         self._home = Pin(self._HOMING_PIN, mode=Pin.IN, pull=Pin.PULL_DOWN)
         self._switch = Pin(self._SWITCH_PIN, mode=Pin.OPEN_DRAIN)
+        self._switch_delay()
         self.find_home()

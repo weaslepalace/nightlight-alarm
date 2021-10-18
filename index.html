@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<title>Aurora Light Alarm</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+</style>
+<body>
+	<script>
+		window.addEventListener('load', () => {
+			const now = new Date();
+			now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+			now.setMilliseconds(null);
+			console.log(now.toISOString().slice(0,-8))
+			document.getElementById('now').value =
+				now.toISOString().slice(0, -8);
+		});
+	</script>
+	<form action="settime">
+		<div>
+			<label for "now">Set Time</label>
+			<input id="now" type="datetime-local">
+			<input type="submit" value="Set">
+		</div>
+	</form>
+</body>
+</html>
