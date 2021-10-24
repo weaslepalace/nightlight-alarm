@@ -49,7 +49,7 @@ class HttpFriend:
     def add_event(callback, route):
         _event_handlers[route] = callback
 
-def hiya()
+def hiya():
     print("Hello!")
 
 if __name__ == "__main__":
