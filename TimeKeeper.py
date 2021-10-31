@@ -120,3 +120,9 @@ class TimeKeeper:
 
     def list(self):
         return self._alarms
+
+    def set(self, time):
+        
+    def now(self):
+        
+        

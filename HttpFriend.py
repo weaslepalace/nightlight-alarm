@@ -4,10 +4,20 @@ class HttpFriend:
     
     _event_handler = {}
 
-    def _header(self, length):
+    class Document:
+        def __init__(self, name, mimetype, code):
+            self.name = name
+            self.mimetype = mimetype
+            self.code = code
+
+    index = Document("index.html", "text/html", 200)
+    get_datetime = Document("get_local_datetime.js", "text/javascript", 200)
+    not_found = Document("not_found.html", "text/html", 404)
+
+    def _header(self, code, content_type, length):
         h = [
-            "HTTP/1.1 200 OK\r\n",
-            "Content-Type: text/html\r\n",
+            f"HTTP/1.1 {code} OK\r\n",
+            f"Content-Type: {content_type}\r\n",
             "Connection: close\r\n",
             f"Content-Length: {length}\r\n",
             "\r\n"
@@ -16,11 +26,14 @@ class HttpFriend:
         print(header)
         return header
 
-    def parse_route(req):
-        req.split("\r\n")
-        method = req[0]
-        route = req[1]
-        version = req[2]
+    def parse_request(self, req):
+        print(req)
+        line = req.split("\r\n")
+        element = line[0].split()
+        method = element[0]
+        route = element[1]
+        version = element[2]
+        return method, route, version
 
     def __init__(self):
         pass
@@ -37,13 +50,24 @@ class HttpFriend:
             client, addr = self._sock.accept()
             print(f"Connection for {addr}")
             req = client.recv(1024)
-            if req:
-                print(str(req))
-            with open("index.html") as f:
-                html = f.read()
+            if not req or len(req) == 0:
+                client.close()
+
+            _, route, _ = self.parse_request(str(req))
+ 
+            doc = (
+                self.index if route == "/" else
+                self.get_datetime if route == "/get_local_time.js" else
+                self.not_found
+            )
+            
+            print(f"Serving {route} with {doc.name} as {doc.mimetype}")
+            
+            with open(doc.name) as f:
+                contents = f.read()
                  
-                client.send(self._header(len(html)))
-                client.send(bytearray(html.encode()))
+                client.send(self._header(doc.code, doc.mimetype, len(contents)))
+                client.send(bytearray(contents.encode()))
             client.close()
 
     def add_event(callback, route):

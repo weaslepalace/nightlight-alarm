@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html>
 <meta charset="UTF-8">
-<title>Aurora Light Alarm</title>
+<title>Aurora Alarm Clock</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="">
 <style>
 </style>
 <body>
-	<script>
-		window.addEventListener('load', () => {
-			const now = new Date();
-			now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-			now.setMilliseconds(null);
-			console.log(now.toISOString().slice(0,-8))
-			document.getElementById('now').value =
-				now.toISOString().slice(0, -8);
-		});
-	</script>
+	<!-- <script src="get_local_time.js"></script> -->
+	<div>
+		Current Date/Time $now$
+	</div>
 	<form action="settime">
 		<div>
-			<label for "now">Set Time</label>
-			<input id="now" type="datetime-local">
+			<label for="now">Set Date/Time</label>
+			<input id="now" value="2017-06-01T08:30" type="datetime-local">
 			<input type="submit" value="Set">
 		</div>
 	</form>
