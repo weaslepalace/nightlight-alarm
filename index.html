@@ -7,15 +7,17 @@
 <style>
 </style>
 <body>
-	<!-- <script src="get_local_time.js"></script> -->
+	<script src="get_local_datetime.js"></script>
 	<div>
 		Current Date/Time $now$
 	</div>
-	<form action="settime">
+	<form action="setTime" method="POST">
 		<div>
-			<label for="now">Set Date/Time</label>
-			<input id="now" value="2017-06-01T08:30" type="datetime-local">
-			<input type="submit" value="Set">
+			<label for="nowTime">Set Date/Time</label>
+			<input id="nowTime" name="nowTime" type="time" required>
+			<input id="nowDate" name="nowDate" type="date" required>
+			<span class="validity">
+			<input type="submit" value="Set"> 
 		</div>
 	</form>
 </body>
