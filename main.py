@@ -1,13 +1,31 @@
 #from ShinePattern import ShinePattern
 #from TimeKeeper import TimeKeeper
 from HttpFriend import HttpFriend
+from RouteBuddy import RouteBuddy
 from TextCrawler import TextCrawler
-from AccessPointFriend import AccessPointFriend
+#from AccessPointFriend import AccessPointFriend
+
+def hello(arg):
+    print(arg)
+    return arg
+
+tc = TextCrawler("index.html")
+tc.define("now", "this present moment")
+
+rb = RouteBuddy()
+rb.new_route("Hello", hello, "Bonjour Monde", None)
+rb.new_route("/", [hello, tc.make], None, "text/html")
+rb.new_route(
+    "/get_local_datetime.js",
+    rb.static_document,
+    "get_local_datetime.js",
+    "text/javascript")
+
 
 #from machine import RTC
 #import time
-ap = AccessPointFriend("HackMePlz", 2)
-ap.start()
+#ap = AccessPointFriend("HackMePlz", 2)
+#ap.start()
 
 #shine = ShinePattern()
 #tk = TimeKeeper()
@@ -30,6 +48,6 @@ ap.start()
 
 http = HttpFriend()
 http.start_server()
-http.serve()
+http.serve(rb)
 
 

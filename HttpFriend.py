@@ -45,7 +45,7 @@ class HttpFriend:
         self._sock.listen(1)
         print(f"Listening on {addr}")
     
-    def serve(self):
+    def serve(self, router):
         while True:
             client, addr = self._sock.accept()
             print(f"Connection for {addr}")
@@ -54,20 +54,11 @@ class HttpFriend:
                 client.close()
 
             _, route, _ = self.parse_request(str(req))
- 
-            doc = (
-                self.index if route == "/" else
-                self.get_datetime if route == "/get_local_time.js" else
-                self.not_found
-            )
-            
-            print(f"Serving {route} with {doc.name} as {doc.mimetype}")
-            
-            with open(doc.name) as f:
-                contents = f.read()
-                 
-                client.send(self._header(doc.code, doc.mimetype, len(contents)))
-                client.send(bytearray(contents.encode()))
+            code, mimetype, contents = router.dispatch(route) 
+
+            print(f"Serving {route} as {mimetype}")
+            client.send(self._header(code, mimetype, len(contents)))
+            client.send(bytearray(contents.encode()))
             client.close()
 
     def add_event(callback, route):
