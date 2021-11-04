@@ -8,17 +8,26 @@
 </style>
 <body>
 	<script src="get_local_datetime.js"></script>
-	<div>
-		Current Date/Time $now$
-	</div>
-	<form action="setTime" method="POST">
-		<div>
-			<label for="nowTime">Set Date/Time</label>
-			<input id="nowTime" name="nowTime" type="time" required>
-			<input id="nowDate" name="nowDate" type="date" required>
-			<span class="validity">
-			<input type="submit" value="Set"> 
-		</div>
-	</form>
+	<table>
+		<tr>
+			<td>Current Date/Time</td> 
+			<td id="current_time_from_server">$now$</td>
+		</tr>
+		<tr>
+			<form action="setTime" method="POST">
+				<td>
+					<label for="nowTime">Set Date/Time</label>
+				</td>
+				<td>
+					<input id="nowTime" name="nowTime" type="time" required>
+					<input id="nowDate" name="nowDate" type="date" required>
+					<span class="validity">
+				</td>
+				<td>
+					<input type="submit" value="Set"> 
+				</td>
+			</form>
+		</tr>
+	</table>
 </body>
 </html>

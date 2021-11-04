@@ -122,7 +122,9 @@ class TimeKeeper:
         return self._alarms
 
     def set(self, time):
-        
+        pass
+ 
     def now(self):
-        
+        t = utime.localtime(utime.time())
+        return f"{t[3]}:{t[4]}:{t[5]} {t[0]}-{t[1]}-{t[2]}"
         

@@ -10,3 +10,8 @@ window.addEventListener('load', () => {
 	document.getElementById('nowDate').value = datestr;
 	document.getElementById('nowTime').value = timestr;
 });
+
+//setInterval(() => {
+//		
+//}, 1000);
+//

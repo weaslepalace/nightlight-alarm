@@ -63,12 +63,3 @@ class HttpFriend:
 
     def add_event(callback, route):
         _event_handlers[route] = callback
-
-def hiya():
-    print("Hello!")
-
-if __name__ == "__main__":
-    http = HttpFriend()
-    http.add_event(hiya, "settime")
-    http.start_server()
-    http.serve()

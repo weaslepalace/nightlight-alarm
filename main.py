@@ -5,16 +5,19 @@ from RouteBuddy import RouteBuddy
 from TextCrawler import TextCrawler
 #from AccessPointFriend import AccessPointFriend
 
-def hello(arg):
-    print(arg)
-    return arg
+import time
+
+def now():
+    t = time.localtime(time.time())
+    return f"{t[3]:02}:{t[4]:02}:{t[5]:02} {t[0]:04}-{t[1]:02}-{t[2]:02}"
 
 tc = TextCrawler("index.html")
-tc.define("now", "this present moment")
+def index_route(tc):
+    tc.define("now", now())
+    return tc.make()
 
 rb = RouteBuddy()
-rb.new_route("Hello", hello, "Bonjour Monde", None)
-rb.new_route("/", [hello, tc.make], None, "text/html")
+rb.new_route("/", index_route, tc, mimetype="text/html")
 rb.new_route(
     "/get_local_datetime.js",
     rb.static_document,
