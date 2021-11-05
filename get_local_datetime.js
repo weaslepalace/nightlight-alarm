@@ -7,11 +7,16 @@ window.addEventListener('load', () => {
 	console.log(now.toISOString().slice(11, 16));
 	const datestr = now.toISOString().slice(0, 10);
 	const timestr = now.toISOString().slice(11, 16);
-	document.getElementById('nowDate').value = datestr;
-	document.getElementById('nowTime').value = timestr;
+	document.getElementById('now_date').value = datestr;
+	document.getElementById('now_time').value = timestr;
 });
 
-//setInterval(() => {
-//		
-//}, 1000);
-//
+setInterval(() => {
+	fetch("device_time").then((response) => {
+		response.text().then((text) => {
+			console.log(text);
+			current_time_from_device.textContent = text;
+		});
+	});
+}, 1000);
+

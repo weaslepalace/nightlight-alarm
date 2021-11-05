@@ -7,14 +7,19 @@ from TextCrawler import TextCrawler
 
 import time
 
-def now():
+tc = TextCrawler("index.html")
+
+def now(req):
     t = time.localtime(time.time())
     return f"{t[3]:02}:{t[4]:02}:{t[5]:02} {t[0]:04}-{t[1]:02}-{t[2]:02}"
 
-tc = TextCrawler("index.html")
-def index_route(tc):
-    tc.define("now", now())
+def index_route(tc, req):
+    tc.define("now", now(None))
     return tc.make()
+
+def set_time(req):
+    print(req["payload"])
+    return ""
 
 rb = RouteBuddy()
 rb.new_route("/", index_route, tc, mimetype="text/html")
@@ -23,7 +28,8 @@ rb.new_route(
     rb.static_document,
     "get_local_datetime.js",
     "text/javascript")
-
+rb.new_route("/device_time", now, None, mimetype="text/plain")
+rb.new_route("/set_time", set_time, None, mimetype="text/plain") 
 
 #from machine import RTC
 #import time

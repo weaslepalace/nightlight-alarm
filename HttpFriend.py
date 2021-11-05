@@ -4,16 +4,6 @@ class HttpFriend:
     
     _event_handler = {}
 
-    class Document:
-        def __init__(self, name, mimetype, code):
-            self.name = name
-            self.mimetype = mimetype
-            self.code = code
-
-    index = Document("index.html", "text/html", 200)
-    get_datetime = Document("get_local_datetime.js", "text/javascript", 200)
-    not_found = Document("not_found.html", "text/html", 404)
-
     def _header(self, code, content_type, length):
         h = [
             f"HTTP/1.1 {code} OK\r\n",
@@ -26,15 +16,6 @@ class HttpFriend:
         print(header)
         return header
 
-    def parse_request(self, req):
-        print(req)
-        line = req.split("\r\n")
-        element = line[0].split()
-        method = element[0]
-        route = element[1]
-        version = element[2]
-        return method, route, version
-
     def __init__(self):
         pass
 
@@ -45,6 +26,39 @@ class HttpFriend:
         self._sock.listen(1)
         print(f"Listening on {addr}")
     
+    def parse_request(self, req):
+        print(req)
+        line = req.split("\r\n")
+        element = line[0].split()
+       
+        top_line = {
+            "method" : element[0],
+            "route" : element[1],
+            "version" : element[2]
+        }
+
+        line = [ln for ln in line if len(ln) == 2]
+        headers = {}
+        for header in line[1:]:
+            h = header.split(":", 1)
+            print(h)
+            headers[h[0].strip().lower()] = h[1].strip()
+
+        print(headers)
+
+        payload = ""
+        if "content-length" in headers:
+            #This assumes that there is payload if content-length is provided
+            payload = req[:-headers["content-length"]]
+        
+        parsed_req = {
+            "top_line" : top_line,
+            "headers" : headers,
+            "payload" : payload
+        }
+
+        return parsed_req
+
     def serve(self, router):
         while True:
             client, addr = self._sock.accept()
@@ -53,13 +67,14 @@ class HttpFriend:
             if not req or len(req) == 0:
                 client.close()
 
-            _, route, _ = self.parse_request(str(req))
-            code, mimetype, contents = router.dispatch(route) 
+            parsed_req = self.parse_request(req.decode())
+            result = router.dispatch(
+                parsed_req["top_line"]["route"],
+                parsed_req) 
 
-            print(f"Serving {route} as {mimetype}")
-            client.send(self._header(code, mimetype, len(contents)))
-            client.send(bytearray(contents.encode()))
+            client.send(self._header(
+                result["code"],
+                result["mimetype"],
+                len(result["contents"])))
+            client.send(bytearray(result["contents"].encode()))
             client.close()
-
-    def add_event(callback, route):
-        _event_handlers[route] = callback
