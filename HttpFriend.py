@@ -1,4 +1,5 @@
 import socket
+import sys
 
 class HttpFriend:
     
@@ -19,16 +20,23 @@ class HttpFriend:
     def __init__(self):
         pass
 
+    def stop_server(self):
+        self._sock.shutdown(socket.SHUT_RDWR)
+        print("Closing socket");
+        
     def start_server(self): 
         addr = socket.getaddrinfo("0.0.0.0", 80)[0][-1]
         self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self._sock.bind(addr)
         self._sock.listen(1)
         print(f"Listening on {addr}")
-    
+
     def parse_request(self, req):
-        print(req)
-        line = req.split("\r\n")
+        r = req.split("\r\n\r\n", 1)
+        content = r[1]
+        line = r[0].split("\r\n")
+
         element = line[0].split()
        
         top_line = {
@@ -37,20 +45,26 @@ class HttpFriend:
             "version" : element[2]
         }
 
-        line = [ln for ln in line if len(ln) == 2]
+        header = [
+            ln.split(":", 1)
+            for ln in line
+            if len(ln.split(":",1)) == 2
+        ]
         headers = {}
-        for header in line[1:]:
-            h = header.split(":", 1)
-            print(h)
+        for h in header:
             headers[h[0].strip().lower()] = h[1].strip()
 
+        print("Headers:")
         print(headers)
 
         payload = ""
         if "content-length" in headers:
             #This assumes that there is payload if content-length is provided
-            payload = req[:-headers["content-length"]]
-        
+            content_length = int(headers["content-length"])
+            payload = content[:content_length]
+        print("Payload:")
+        print(payload)       
+ 
         parsed_req = {
             "top_line" : top_line,
             "headers" : headers,
@@ -61,7 +75,12 @@ class HttpFriend:
 
     def serve(self, router):
         while True:
-            client, addr = self._sock.accept()
+            try:
+                client, addr = self._sock.accept()
+            except OSError as e:
+                print(e)
+                continue
+
             print(f"Connection for {addr}")
             req = client.recv(1024)
             if not req or len(req) == 0:
@@ -77,4 +96,12 @@ class HttpFriend:
                 result["mimetype"],
                 len(result["contents"])))
             client.send(bytearray(result["contents"].encode()))
+            
+#            try:
+#                connection = parsed_req["headers"]["connection"]
+#                if connection != "keep-alive":
+#                    print(f"Closing socket on {addr}")
+#                    client.close()
+#            except:
+#                print(f"Closing socket on {addr}")
             client.close()

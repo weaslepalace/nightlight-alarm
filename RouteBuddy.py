@@ -40,7 +40,12 @@ class RouteBuddy:
 
     def dispatch(self, route, request):
         if route not in self._route_dispatcher:
-            return 404, "text/html", self.static_document("not_found.html")
+            result = {
+                "code" : 404,
+                "mimetype" : "text/html",
+                "contents" : self.static_document("not_found.html", request)
+            }
+            return result
         return self._route_dispatcher[route].call(request)
 
     def static_document(self, path, req):

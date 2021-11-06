@@ -14,19 +14,17 @@
 			<td id="current_time_from_device">$now$</td>
 		</tr>
 		<tr>
-			<form action="set_time" method="POST">
-				<td>
-					<label for="now_time">Set Date/Time</label>
-				</td>
-				<td>
-					<input id="now_time" name="now_time" type="time" required>
-					<input id="now_date" name="now_date" type="date" required>
-					<span class="validity">
-				</td>
-				<td>
-					<input type="submit" value="Set"> 
-				</td>
-			</form>
+			<td>
+				<label for="now_time">Set Date/Time</label>
+			</td>
+			<td>
+				<input id="now_time" name="now_time" type="time" required>
+				<input id="now_date" name="now_date" type="date" required>
+				<span class="validity">
+			</td>
+			<td>
+				<button onclick="send_local_time()">Update</button> 
+			</td>
 		</tr>
 	</table>
 </body>

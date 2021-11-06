@@ -1,11 +1,12 @@
-#from ShinePattern import ShinePattern
-#from TimeKeeper import TimeKeeper
+from ShinePattern import ShinePattern
+from TimeKeeper import TimeKeeper
 from HttpFriend import HttpFriend
 from RouteBuddy import RouteBuddy
 from TextCrawler import TextCrawler
-#from AccessPointFriend import AccessPointFriend
+from AccessPointFriend import AccessPointFriend
 
 import time
+import json
 
 tc = TextCrawler("index.html")
 
@@ -19,7 +20,9 @@ def index_route(tc, req):
 
 def set_time(req):
     print(req["payload"])
-    return ""
+    time_to = json.loads(req["payload"])
+    print(f'Time: {time_to["time"]}, Date: {time_to["date"]}')
+    return "{}"
 
 rb = RouteBuddy()
 rb.new_route("/", index_route, tc, mimetype="text/html")
@@ -28,13 +31,12 @@ rb.new_route(
     rb.static_document,
     "get_local_datetime.js",
     "text/javascript")
-rb.new_route("/device_time", now, None, mimetype="text/plain")
-rb.new_route("/set_time", set_time, None, mimetype="text/plain") 
-
+rb.new_route("/device_time", now, None, mimetype="text/html")
+rb.new_route("/set_time", set_time, None, mimetype="application/json") 
 #from machine import RTC
 #import time
-#ap = AccessPointFriend("HackMePlz", 2)
-#ap.start()
+ap = AccessPointFriend("HackMeForReal", 2)
+ap.start()
 
 #shine = ShinePattern()
 #tk = TimeKeeper()

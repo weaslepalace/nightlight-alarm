@@ -1,15 +1,47 @@
 
-window.addEventListener('load', () => {
+const update_local_time = () => {
 	const now = new Date();
 	now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-	now.setMilliseconds(null);
-	console.log(now.toISOString().slice(0, 10));
-	console.log(now.toISOString().slice(11, 16));
 	const datestr = now.toISOString().slice(0, 10);
 	const timestr = now.toISOString().slice(11, 16);
-	document.getElementById('now_date').value = datestr;
-	document.getElementById('now_time').value = timestr;
+	console.log(datestr);
+	console.log(timestr);
+	return {
+		datestr,
+		timestr
+	};
+};
+
+
+const send_local_time = () => {
+	const local_time = {
+		date : now_date.value,
+		time : now_time.value
+	};
+
+	fetch("set_time", {
+		method: "POST",
+		headers: {
+			"Content-Type" : "application/json"
+		},
+		body: JSON.stringify(local_time)
+	})
+	.then(response => response.json())
+	.then(data => {
+		console.log("Success");
+	})
+	.catch((error) => {
+		console.error("Error", error);
+	});
+};
+
+
+window.addEventListener('load', () => {
+	local_time = update_local_time();
+	now_date.value = local_time.datestr;
+	now_time.value = local_time.timestr;
 });
+
 
 setInterval(() => {
 	fetch("device_time").then((response) => {
@@ -18,5 +50,8 @@ setInterval(() => {
 			current_time_from_device.textContent = text;
 		});
 	});
+	local_time = update_local_time();
+	now_date.value = local_time.datestr;
+	now_time.value = local_time.timestr;
 }, 1000);
 
