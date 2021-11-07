@@ -1,7 +1,6 @@
 from machine import RTC
 import utime
 
-
     
 class TimeKeeper:
     
@@ -121,10 +120,13 @@ class TimeKeeper:
     def list(self):
         return self._alarms
 
-    def set(self, time):
-        pass
- 
+    def set(self, new_time):
+        d = [int(d) for d in new_time["date"].split("-")]
+        t = [int(t) for t in new_time["time"].split(":")]
+        rtc = RTC()
+        rtc.datetime((d[0], d[1], d[2], 0, t[0], t[1], 0, 0))
+        
     def now(self):
         t = utime.localtime(utime.time())
-        return f"{t[3]}:{t[4]}:{t[5]} {t[0]}-{t[1]}-{t[2]}"
+        return f"{t[3]:02}:{t[4]:02}:{t[5]:02} {t[0]:04}-{t[1]:02}-{t[2]:02}"
         

@@ -36,6 +36,24 @@ const send_local_time = () => {
 };
 
 
+const send_next_pattern = () => {
+	fetch("next_pattern", {
+		method : "POST",
+		headers : {
+			"Content-Type" : "application/json"
+		},
+		body: JSON.stringify("{}")
+	})
+	.then(response => response.json())
+	.then(data => {
+		console.log("Success");
+	})
+	.catch((error) => {
+		console.error("Error", error);
+	});
+};
+
+
 window.addEventListener('load', () => {
 	local_time = update_local_time();
 	now_date.value = local_time.datestr;
@@ -50,8 +68,8 @@ setInterval(() => {
 			current_time_from_device.textContent = text;
 		});
 	});
-	local_time = update_local_time();
-	now_date.value = local_time.datestr;
-	now_time.value = local_time.timestr;
+//	local_time = update_local_time();
+//	now_date.value = local_time.datestr;
+//	now_time.value = local_time.timestr;
 }, 1000);
 

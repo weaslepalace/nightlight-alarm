@@ -96,12 +96,4 @@ class HttpFriend:
                 result["mimetype"],
                 len(result["contents"])))
             client.send(bytearray(result["contents"].encode()))
-            
-#            try:
-#                connection = parsed_req["headers"]["connection"]
-#                if connection != "keep-alive":
-#                    print(f"Closing socket on {addr}")
-#                    client.close()
-#            except:
-#                print(f"Closing socket on {addr}")
             client.close()
