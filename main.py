@@ -2,21 +2,18 @@ from ShinePattern import ShinePattern
 from TimeKeeper import TimeKeeper
 from HttpFriend import HttpFriend
 from RouteBuddy import RouteBuddy
-from TextCrawler import TextCrawler
 from AccessPointFriend import AccessPointFriend
 
 import json
 
-tc = TextCrawler("index.html")
 shine = ShinePattern()
 tk = TimeKeeper()
 
 def now(req):
     return tk.now()
 
-def index_route(tc, req):
-    tc.define("now", tk.now())
-    return tc.make()
+def index_route(req):
+    return static_document("index.html", req);
 
 def set_time(req):
     print(req["payload"])
@@ -28,8 +25,14 @@ def next_pattern(res):
     shine.next_pattern()
     return "{}"
 
+def get_alarms(res):
+    return json.dumps(tk.list())
+
+def add_alarm(res):
+    alarm = json.loads(req["payload"])
+     
 rb = RouteBuddy()
-rb.new_route("/", index_route, tc, mimetype="text/html")
+rb.new_route("/", index_route, None, mimetype="text/html")
 rb.new_route(
     "/get_local_datetime.js",
     rb.static_document,
@@ -38,6 +41,8 @@ rb.new_route(
 rb.new_route("/device_time", now, None, mimetype="text/html")
 rb.new_route("/set_time", set_time, None, mimetype="application/json") 
 rb.new_route("/next_pattern", next_pattern, None, mimetype="application/json")
+rb.new_route("/get_alarms", get_alarms, None, mimetype="application/json")
+rb.new_route("/add_alarm", add_alarm, None, mimetype="application/json")
 
 #from machine import RTC
 #import time

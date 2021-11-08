@@ -11,7 +11,7 @@
 	<table>
 		<tr>
 			<td>Current Date/Time</td> 
-			<td id="current_time_from_device">$now$</td>
+			<td id="current_time_from_device">... loading</td>
 		</tr>
 		<tr>
 			<td>
@@ -29,6 +29,13 @@
 	</table>
 	<div>
 		<button onclick="send_next_pattern()">Next Pattern</button>
+	</div>
+	<div>
+		<h2>Alarms</h2>	
+	</div>
+	<table id=set_alarm_forms></table>
+	<div>
+		<button onclick="make_set_alarm_form()">+</button>
 	</div>
 </body>
 </html>
