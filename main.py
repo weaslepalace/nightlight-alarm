@@ -8,12 +8,16 @@ import json
 
 shine = ShinePattern()
 tk = TimeKeeper()
+rb = RouteBuddy()
+
+tk.add_alarm("Alarm1", [2021, 11, 14, 17, 42, 0, 0, 0], shine.set_pattern, "SOLID_RED", True, False)
+tk.add_alarm("Alarm2", [2021, 11, 14, 17, 44, 0, 0, 0], shine.set_pattern, "OFF", True, False)
 
 def now(req):
     return tk.now()
 
 def index_route(req):
-    return static_document("index.html", req);
+    return rb.static_document("index.html", req);
 
 def set_time(req):
     print(req["payload"])
@@ -21,17 +25,29 @@ def set_time(req):
     tk.set(time_to)
     return "{}"
 
-def next_pattern(res):
+def next_pattern(req):
     shine.next_pattern()
     return "{}"
 
-def get_alarms(res):
-    return json.dumps(tk.list())
+def get_alarms(req):
+    alarms = []
+    for alarm in tk.list():
+        a = alarm.get()
+        a["pattern"] = alarm.handler().arguments()
+        alarms.append(a)
+    return json.dumps(alarms)
 
-def add_alarm(res):
+def add_alarm(req):
     alarm = json.loads(req["payload"])
-     
-rb = RouteBuddy()
+    return "{}"
+
+def remove_alarm(req):
+    names = json.loads(req["payload"])
+    for name in names:
+        tk.remove_alarm(name=name)
+    return "{}"
+    
+ 
 rb.new_route("/", index_route, None, mimetype="text/html")
 rb.new_route(
     "/get_local_datetime.js",
@@ -41,8 +57,9 @@ rb.new_route(
 rb.new_route("/device_time", now, None, mimetype="text/html")
 rb.new_route("/set_time", set_time, None, mimetype="application/json") 
 rb.new_route("/next_pattern", next_pattern, None, mimetype="application/json")
-rb.new_route("/get_alarms", get_alarms, None, mimetype="application/json")
+rb.new_route("/get_alarms", get_alarms, None, mimetype="text/html")
 rb.new_route("/add_alarm", add_alarm, None, mimetype="application/json")
+rb.new_route("/remove_alarm", remove_alarm, None, mimetype="application/json")
 
 #from machine import RTC
 #import time

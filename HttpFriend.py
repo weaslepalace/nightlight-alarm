@@ -33,7 +33,12 @@ class HttpFriend:
         print(f"Listening on {addr}")
 
     def parse_request(self, req):
-        r = req.split("\r\n\r\n", 1)
+        try:
+            r = req.split("\r\n\r\n", 1)
+        except ValueError as e:
+            print(e)
+            return ""
+        
         content = r[1]
         line = r[0].split("\r\n")
 
@@ -95,5 +100,11 @@ class HttpFriend:
                 result["code"],
                 result["mimetype"],
                 len(result["contents"])))
-            client.send(bytearray(result["contents"].encode()))
-            client.close()
+            print(result)
+
+            try:
+                client.send(bytearray(result["contents"].encode()))
+                client.close()
+            except OSError as e:
+                print(e)
+            

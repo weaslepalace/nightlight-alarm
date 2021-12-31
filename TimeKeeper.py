@@ -87,6 +87,17 @@ class TimeKeeper:
         def alarm_time(self):
             return utime.localtime(self._alarm_time)
 
+        def handler(self):
+            return self._handler
+
+        def get(self):
+            return {
+                "name": self._name,
+                "time": self.alarm_time(),
+                "weekends": not self._weekdays_only,
+                "daily": self._daily
+            }
+
     _alarms = []
     
     def __init__(self):
@@ -109,7 +120,10 @@ class TimeKeeper:
         elif alarm_id is not None:
             del self._alarms[alarm_id]
         elif name is not None:
-          self._alarms.remove([a for a in self._alarms if a.name is name][0])
+            alrm = [a for a in self._alarms if a.name() == name][0]
+            print(f"Removing {name}")
+            self._alarms.remove(alrm)
+#            self._alarms.remove([a for a in self._alarms if a.name is name])
 
     def poll(self):
         for alarm in self._alarms:
